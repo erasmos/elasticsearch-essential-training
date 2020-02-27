@@ -1,0 +1,66 @@
+# Basic Example
+GET bank/_analyze
+{
+  "tokenizer" : "standard",
+  "text" : "The Moon is Made of Cheese Some Say"
+}
+
+# Mixed String
+GET bank/_analyze
+{
+  "tokenizer" : "standard",
+  "text" : "The Moon-is-Made of Cheese.Some Say$"
+}
+
+# Uset the letter tokenizer
+GET bank/_analyze
+{
+  "tokenizer" : "letter",
+  "text" : "The Moon-is-Made of Cheese.Some Say$"
+}
+
+# How about a URL
+GET bank/_analyze
+{
+  "tokenizer": "standard",
+  "text": "you@example.com login at https://bensullins.com attempt"
+}
+
+GET bank/_analyze
+{
+  "tokenizer": "uax_url_email",
+  "text": "you@example.com login at https://bensullins.com attempt"
+}
+
+# Where it breaks, two fields with diff analyzers
+PUT /idx1
+{
+  "mappings": {
+    "t1": {
+      "properties": {
+        "title": {
+            "type": "text",
+            "analyzer" : "standard"
+        },
+        "english_title": {
+            "type":     "text",
+            "analyzer": "english"
+        }
+      }
+    }
+  }
+}
+
+GET idx1
+
+GET idx1/_analyze
+{
+  "field": "title",
+  "text": "Bears"
+}
+
+GET idx1/_analyze
+{
+  "field": "english_title",
+  "text": "Bears"
+}

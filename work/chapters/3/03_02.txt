@@ -1,0 +1,17 @@
+# Download from Elastic or use Exercise Files
+# If necessary unzip the accounts.zip file
+
+# Inspect Accounts.json
+head accounts.json
+
+# Load via curl, notice the endpoint and type
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/bank/account/_bulk?pretty' --data-binary @accounts.json
+
+# check inside ES
+GET /_cat/indices
+GET /bank
+
+# set index pattern in Kibana
+Management > Uncheck time-based events > bank
+
+# View on left to see properties

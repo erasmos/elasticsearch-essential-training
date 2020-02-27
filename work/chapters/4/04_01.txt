@@ -1,0 +1,57 @@
+# show me everything
+GET bank/account/_search
+
+# find CA accounts only
+GET bank/account/_search
+{
+  "query": {
+    "match": {
+      "state": "CA"
+    }
+  }
+}
+
+# find "Techade" accounts in CA only
+GET bank/account/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        { "match": {"state": "CA"} },
+        { "match": {"employer": "Techade"}}
+      ]
+    }
+  }
+}
+
+# find non "Techade" accounts outside of CA
+GET bank/account/_search
+{
+  "query": {
+    "bool": {
+      "must_not": [
+        { "match": {"state": "CA"} },
+        { "match": {"employer": "Techade"}}
+      ]
+    }
+  }
+}
+
+# Boost results for Smith
+GET bank/account/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        { "match": {"state": "CA"} },
+        { "match": {
+          "lastname": {
+            "query": "Smith",
+            "boost": 3
+            }
+          }
+        }
+      ]
+    }
+  }
+}
