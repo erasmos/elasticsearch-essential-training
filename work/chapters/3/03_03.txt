@@ -1,0 +1,101 @@
+# Download sample logs from Elastic or use Exercise Files
+# If necessary unzip/tar logs.jsonl.gz
+
+
+# Add mapping for lat/lon geo properties for logs
+PUT /logstash-2015.05.18
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+# Create two more to simulate daily logs
+PUT /logstash-2015.05.19
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+PUT /logstash-2015.05.20
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+# Check out structure of log data
+head logs.jsonl
+
+# Import log files
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/_bulk?pretty' --data-binary @logs.jsonl
+
+# Check ES for data
+GET /_cat/indices/logstash-*
+
+# Change default index pattern in Kibana
+
+# Load Shakespeare data (download from elastic or find in the Exercise Files)
+# Check out shakespeare.json
+head shakespeare.json
+
+# Shakespeare Schema
+{
+    "line_id": INT,
+    "play_name": "String",
+    "speech_number": INT,
+    "line_number": "String",
+    "speaker": "String",
+    "text_entry": "String",
+}
+
+# Create Shakespeare index with data types
+PUT /shakespeare
+{
+ "mappings" : {
+  "_default_" : {
+   "properties" : {
+    "speaker" : {"type": "keyword" },
+    "play_name" : {"type": "keyword" },
+    "line_id" : { "type" : "integer" },
+    "speech_number" : { "type" : "integer" }
+   }
+  }
+ }
+}
+
+# Load Shakespeare data
+curl -H 'Content-Type: application/x-ndjson' -XPOST 'localhost:9200/shakespeare/_bulk?pretty' --data-binary @shakespeare.json
+
+# Check out index in ES
+GET /shakespeare
+GET /_cat/indices?v

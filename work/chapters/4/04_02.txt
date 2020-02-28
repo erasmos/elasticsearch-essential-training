@@ -1,0 +1,74 @@
+# Term Query
+GET bank/account/_search
+{
+  "query": {
+    "term": {
+      "account_number": 516
+    }
+  }
+}
+
+# Returns null because "state" is a text field (hence not an exact match)
+GET bank/account/_search
+{
+  "query": {
+    "term": {
+      "state": "RI"
+    }
+  }
+}
+
+# This works because it uses the "analysis" process
+GET bank/account/_search
+{
+  "query": {
+    "match": {
+      "state": "RI"
+    }
+  }
+}
+
+# Terms can return multiple results
+GET bank/account/_search
+{
+  "query": {
+    "terms": {
+      "account_number": [516,851]
+    }
+  }
+}
+
+
+
+
+# Range Queries
+## gte = Greater-than or equal to
+## gt = Greater-than
+## lte = Less-than or equal to
+## lt = Less-than
+
+# Show all accounts between 516 and 851, boosting the importance
+GET bank/account/_search
+{
+  "query": {
+    "range": {
+      "account_number": {
+        "gte": 516,
+        "lte": 851,
+        "boost": 2
+      }
+    }
+  }
+}
+
+# Show all account holders older than 35
+GET bank/account/_search
+{
+  "query": {
+    "range": {
+      "age": {
+        "gt": 35
+      }
+    }
+  }
+}
